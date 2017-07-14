@@ -6,23 +6,97 @@
 		<script type="text/javascript" src="yaml.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 		<link type="text/css" rel="stylesheet" href="styleSheet.css">
-		
 
 
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+		<script src="//d3js.org/d3.v3.min.js"></script>
 		<script>
+			// var json = null;
+				var margin = {top: 20, right: 120, bottom: 20, left: 120},
+				    width = 960 - margin.right - margin.left,
+				    height = 800 - margin.top - margin.bottom;
+
+				var i = 0,
+				    duration = 750,
+				    root;
+
+				var tree = d3.layout.tree()
+				    .size([height, width]);
+
+				var diagonal = d3.svg.diagonal()
+				    .projection(function(d) { return [d.y, d.x]; });
+
+				var svg = null;
 
 		 	$(document).ready(function() {
+				svg = d3.select("#chart").append("svg")
+				    .attr("width", width + margin.right + margin.left)
+				    .attr("height", height + margin.top + margin.bottom)
+				  	.append("g")
+				    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-		 		
+
 
 				YAML.load('tenant-assets.yaml', function(json) {
 					var $assetTypes = $("#asset_types");
 					var $non_BHATypes = $("#non_asset_bha_items");
 					console.log(json);
 
+					var workFlow = {};
+
+					var woTypes = {};
+					var woTypesArr = json.work_order_types;
+					for(var i=0; i< woTypesArr.length; i++) {
+						var workOrder = woTypesArr[i];
+
+						var typeName = "WorkOrder::" + workOrder["display_name"].replace(/ /g, "");
+						workOrder._id = typeName;
+						woTypes[typeName] = workOrder;
+					}
+
+					workFlowBuilder(workFlow, "workOrder", woTypesArr);
+					console.log(workFlow);
+					setUpWorkFlow(workFlow);
+
+					function isCircular(parent, id) {
+						if (parent.id && parent.id == id) {
+							return true;
+						}
+						else if (parent.parent) {
+							return isCircular(parent.parent, id);
+						}
+						else {
+							return false;
+						}
+					}
+					function workFlowBuilder(node, name, spawns) {
+						node.name = name;
+						if (spawns && spawns.length > 0) {
+							node.children = [];
+							for (var i=0; i<spawns.length; i++) {
+								var spawn = spawns[i];
+								var name = spawn["display_name"];
+								var child = {parent: node, id: spawn._id};
+								var childSpawns = null;
+
+								if (spawn.spawns) {
+									childSpawns = [];
+									for (var si = 0; si<spawn.spawns.length; si++) {
+										var childSpawn = spawn.spawns[si];
+										childSpawns.push(woTypes[childSpawn.full_klass_name]);		
+									}
+								}
+
+								if (!isCircular(node, child.id)){
+									workFlowBuilder(child, name, childSpawns);
+								}
+
+								node.children.push(child);
+							}
+						}
+					}
 
 					function grandChild(key, value) {
 						//if (value) {
@@ -72,6 +146,125 @@
 				});
 			});
 
+			function setUpWorkFlow(flowData) {
+			
+
+
+				  root = flowData;
+				  root.x0 = height / 2;
+				  root.y0 = 0;
+
+				  function collapse(d) {
+				    if (d.children) {
+				      d._children = d.children;
+				      d._children.forEach(collapse);
+				      d.children = null;
+				    }
+				  }
+
+				  root.children.forEach(collapse);
+				  update(root);
+			}
+
+			function update(source) {
+
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse(),
+      links = tree.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = svg.selectAll("g.node")
+      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .on("click", click);
+
+  nodeEnter.append("circle")
+      .attr("r", 1e-6)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("text")
+      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+      .attr("dy", ".35em")
+      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+      .attr("r", 4.5)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+      .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .remove();
+
+  nodeExit.select("circle")
+      .attr("r", 1e-6);
+
+  nodeExit.select("text")
+      .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = svg.selectAll("path.link")
+      .data(links, function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        var o = {x: source.x0, y: source.y0};
+        return diagonal({source: o, target: o});
+      });
+
+  // Transition links to their new position.
+  link.transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+        var o = {x: source.x, y: source.y};
+        return diagonal({source: o, target: o});
+      })
+      .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+// Toggle children on click.
+function click(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+  update(d);
+}
+
 		</script>
 		
 	</head>
@@ -84,7 +277,7 @@
 
 		<div id="asset_types" class="tabcontent"><h1>Assets:</h1></div>
 		<div id="non_asset_bha_items" class="tabcontent"><h1>BHA Items:</h1></div>
-		<div id="work_flow" class="tabcontent"><h1>I have no content yet</h1></div>
+		<div id="work_flow" class="tabcontent"><h1>Work Tree: </h1><div id="chart"></div></div>
 
 
 		<script type="text/javascript">
