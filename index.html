@@ -44,6 +44,10 @@
 					var $non_BHATypes = $("#non_asset_bha_items");
 					console.log(json);
 
+
+					// initialization array 0-35
+					
+
 					var workFlow = {};
 
 					var woTypes = {};
@@ -56,7 +60,12 @@
 						woTypes[typeName] = workOrder;
 					}
 
-					workFlowBuilder(workFlow, "workOrder", woTypesArr);
+					var smallArray = [];
+					for(var i=0; i<36; i++) {
+						smallArray.push(json.work_order_types[i]);
+					}
+
+					workFlowBuilder(workFlow, "workOrder", smallArray);//woTypesArr
 					console.log(workFlow);
 					setUpWorkFlow(workFlow);
 

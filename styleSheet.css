@@ -1,6 +1,7 @@
 body {
 	font-family: Verdana;
 	/*background-color: green;*/
+	/*background-color: green;*/
 }
 div.asset {
 	border: 1px solid black;
@@ -49,24 +50,6 @@ div.tab button.active {
     border-top: none;
 }
 
-
-/*.element1, .element2, .element3, .element4 {
-	margin: 1px
-}
-
-.element1 {
-	margin: 0px 0px 5px 0px; 
-}
-.element2 {
-	text-indent: 4%;
-}
-.element3 {
-	text-indent: 8%;
-}
-.element4 {
-	text-indent: 12%;
-}*/
-
 .itemBody {
 	border: 1px solid black;
 	margin-bottom: 10px;
@@ -74,9 +57,30 @@ div.tab button.active {
 .itemHeader {
 	margin: 0px;
 	padding: 8px;
-	background-color: silver;
+	background-color: silver; 
 }
 /*.outermostLayer {
 	border: 1px solid black;
 	margin-bottom: 10px;
 }*/
+
+/*TREE STUFF GOES IN HERE*/
+.node {
+  cursor: pointer;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node text {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
