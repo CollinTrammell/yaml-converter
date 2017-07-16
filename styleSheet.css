@@ -94,7 +94,7 @@ div.tab button.active {
 
 .link {
   fill: none;
-  stroke: red;
+  stroke: #ccc;
   stroke-width: 1.5px;
 }
 
