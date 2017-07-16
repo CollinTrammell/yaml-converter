@@ -83,7 +83,7 @@ div.tab button.active {
 }
 
 .node circle {
-  fill: #fff;
+  fill: red;
   stroke: red;
   stroke-width: 1.5px;
 }
