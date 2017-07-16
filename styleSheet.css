@@ -12,7 +12,7 @@ div.asset > h4 {
 	background-color: silver;
 }
 
-
+/*something*/
 /* Style the tab */
 div.tab {
     overflow: hidden;
@@ -55,7 +55,7 @@ div.tab button.active {
 }
 
 .element1 {
-	margin: 0px 0px 5px 0px; 
+	margin: 0px 0px 5px 0px;
 }
 .element2 {
 	text-indent: 4%;
