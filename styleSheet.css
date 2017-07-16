@@ -15,7 +15,7 @@ body .h4{
 	/*background-color: green;*/
 }
 div.asset {
-	border: 1px red;
+	border: 1px solid red;
 	margin-bottom: 10px;
 }
 div.asset > .h4 {
