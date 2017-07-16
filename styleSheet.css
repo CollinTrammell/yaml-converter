@@ -34,7 +34,7 @@ div.tab {
 
 /* Style the buttons inside the tab */
 div.tab button {
-    background-color: red;
+    background-color: inherit;
     float: left;
     border: none;
     outline: none;
@@ -70,7 +70,7 @@ div.tab button.active {
 .itemHeader {
 	margin: 0px;
 	padding: 8px;
-	background-color: red;
+	background-color: silver;
 }
 /*.outermostLayer {
 	border: 1px solid black;
@@ -84,7 +84,7 @@ div.tab button.active {
 
 .node circle {
   fill: #fff;
-  stroke: steelblue;
+  stroke: red;
   stroke-width: 1.5px;
 }
 
