@@ -16,6 +16,8 @@ div.asset > h4 {
 	margin: 0px;
 	padding: 8px;
 	background-color: silver;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
 }
 
 
@@ -35,6 +37,8 @@ div.tab button {
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
 }
 
 /* Change background color of buttons on hover */
@@ -81,7 +85,7 @@ div.tab button.active {
 }
 
 .node text {
-  font: 10px sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .link {
