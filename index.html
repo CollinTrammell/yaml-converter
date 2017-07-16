@@ -6,7 +6,7 @@
 		<script type="text/javascript" src="yaml.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 		<link type="text/css" rel="stylesheet" href="styleSheet.css">
-
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -46,7 +46,7 @@
 
 
 					// initialization array 0-35
-					
+
 
 					var workFlow = {};
 
@@ -94,7 +94,7 @@
 									childSpawns = [];
 									for (var si = 0; si<spawn.spawns.length; si++) {
 										var childSpawn = spawn.spawns[si];
-										childSpawns.push(woTypes[childSpawn.full_klass_name]);		
+										childSpawns.push(woTypes[childSpawn.full_klass_name]);
 									}
 								}
 
@@ -114,12 +114,12 @@
 								html += "<li>" + key + ": " + value + "</li>";
 							}
 							else if (valType == 'object') {
-								html += "<li>" + key + ": "; 
+								html += "<li>" + key + ": ";
 								html += "<ul>";
-								for (var key in value) {			
+								for (var key in value) {
 									grandChild(key, value[key]);
 								}
-								// html += "</li>"; //Not sure why it was put this way to begin with, but seems to be wrong.  
+								// html += "</li>"; //Not sure why it was put this way to begin with, but seems to be wrong.
 								// html += "</ul>"; //Still worked though?
 
 								html += "</ul>";
@@ -144,7 +144,7 @@
 										}
 									html += "</ul>";
 							html += "</div>";
-							id.append(html); 
+							id.append(html);
 						}
 					}
 
@@ -156,7 +156,7 @@
 			});
 
 			function setUpWorkFlow(flowData) {
-			
+
 
 
 				  root = flowData;
@@ -275,7 +275,7 @@ function click(d) {
 }
 
 		</script>
-		
+
 	</head>
 	<body>
 		<div class="tab">
@@ -290,7 +290,7 @@ function click(d) {
 
 
 		<script type="text/javascript">
-			
+
 			function openTab(evt, idName) {
 			    var i, tabcontent, tablinks;
 			    tabcontent = document.getElementsByClassName("tabcontent");
