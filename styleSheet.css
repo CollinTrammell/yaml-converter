@@ -1,5 +1,11 @@
+h1 {
+  font-family: 'roboto', sans-serif;
+  font-weight: 900;
+}
+
 body {
-	font-family: Verdana;
+	font-family: 'roboto', sans-serif;
+  font-weight: 400;
 	/*background-color: green;*/
 	/*background-color: green;*/
 }
@@ -11,6 +17,8 @@ div.asset > h4 {
 	margin: 0px;
 	padding: 8px;
 	background-color: silver;
+  font-family: 'roboto', sans-serif;
+  font-weight: 400
 }
 
 
@@ -57,7 +65,7 @@ div.tab button.active {
 .itemHeader {
 	margin: 0px;
 	padding: 8px;
-	background-color: silver; 
+	background-color: silver;
 }
 /*.outermostLayer {
 	border: 1px solid black;
@@ -70,13 +78,15 @@ div.tab button.active {
 }
 
 .node circle {
-  fill: #fff;
-  stroke: steelblue;
+  fill: #777;
+  stroke: red;
   stroke-width: 1.5px;
 }
 
 .node text {
-  font: 10px sans-serif;
+  font-family:'roboto', sans-serif;
+
+
 }
 
 .link {
