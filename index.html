@@ -7,11 +7,17 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 		<link type="text/css" rel="stylesheet" href="styleSheet.css">
 
-
+		
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
 		<script src="//d3js.org/d3.v3.min.js"></script>
+
+		<!-- @#####Make Sure to change this to look for the local copy#####@ -->
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    	<script src="http://code.gijgo.com/1.4.0/js/gijgo.js" type="text/javascript"></script>
+    	<link href="http://code.gijgo.com/1.4.0/css/gijgo.css" rel="stylesheet" type="text/css" /> 
+
 		<script>
 			// var json = null;
 				var margin = {top: 20, right: 120, bottom: 20, left: 120},
@@ -29,8 +35,18 @@
 				    .projection(function(d) { return [d.y, d.x]; });
 
 				var svg = null;
+				var dialog;
 
 		 	$(document).ready(function() {
+
+				dialog = $("#dialog").dialog({
+					autoOpen: false,
+					closeButtonInHeader: false,
+					maxWidth: 600,
+					width: 'auto',
+					resizable: true
+			  	});
+
 				svg = d3.select("#chart").append("svg")
 				    .attr("width", width + margin.right + margin.left)
 				    .attr("height", height + margin.top + margin.bottom)
@@ -198,12 +214,18 @@
       .attr("r", 1e-6)
       .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
+      // $("circle").attr( "onclick", "alert()" );
+      // // ONclick attribute added
+
   nodeEnter.append("text")
       .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
       .attr("dy", ".35em")
       .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .attr("data-id", function(d) { return d.id;})
+      .attr("class", "itemNode")
       .text(function(d) { return d.name; })
-      .style("fill-opacity", 1e-6);
+      .style("fill-opacity", 1e-6)
+      .on("click", itemClick);
 
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
@@ -270,9 +292,22 @@ function click(d) {
   } else {
     d.children = d._children;
     d._children = null;
+    if (!d.children) {
+    	itemClick(d);
+    }
   }
   update(d);
 }
+
+function itemClick(d) {
+	// alert( d.name +" "+ d.id);
+	
+	
+	// $("#dialog").css({ "visibility": "visible"});
+	dialog.open(d.name);
+}
+
+
 
 		</script>
 		
@@ -286,9 +321,20 @@ function click(d) {
 
 		<div id="asset_types" class="tabcontent"><h1>Assets:</h1></div>
 		<div id="non_asset_bha_items" class="tabcontent"><h1>BHA Items:</h1></div>
-		<div id="work_flow" class="tabcontent"><h1>Work Tree: </h1><div id="chart"></div></div>
+		<div id="work_flow" class="tabcontent"><h1 id="workHead">Work Tree: </h1><div id="chart"></div></div>
 
+		<div style="display: none" id="dialog" title="jQuery Dialog" width="400">
+		<hr>
+	        <div data-role="body">
+	            <p>This is related to the popup</p>
+	        </div>
+	        <div data-role="footer">
+	        	<button class="gj-md-button" data-role="close">close</button>
+	            <!-- <button class="gj-md-button" onclick="dialog.close()">OK</button> -->
+	        </div>
+    	</div>
 
+		
 		<script type="text/javascript">
 			
 			function openTab(evt, idName) {
