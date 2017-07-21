@@ -68,6 +68,20 @@
 
 					// initialization array 0-35
 					
+					for (var i = 0; i < json.asset_types.length; i++) {
+
+						var asset = json.asset_types[i];
+						for (var j = 0; j < json.work_order_types.length; j++) {
+							var woType = json.work_order_types[j];
+							if(woType.underscored && woType.underscored.startsWith(asset.prefix)) {
+								woType._asset = asset;
+							}
+						}
+
+					}
+
+
+
 
 					var workFlow = {};
 
@@ -319,8 +333,8 @@ function itemClick(d) {
 	</head>
 	<body>
 		<div class="tab">
-			<button class="tablinks" onclick="openTab(event, 'asset_types')">Assets</button>
-			<button class="tablinks" onclick="openTab(event, 'non_asset_bha_items')">BHA Items</button>
+			<button class="tablinks" onclick="openTab(event, 'asset_types'); if(dialog) dialog.close();">Assets</button>
+			<button class="tablinks" onclick="openTab(event, 'non_asset_bha_items'); if(dialog) dialog.close();">BHA Items</button>
 			<button class="tabLinks" onclick="openTab(event, 'work_flow')">Work Flow</button>
 		</div>
 
