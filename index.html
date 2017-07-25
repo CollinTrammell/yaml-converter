@@ -3,15 +3,31 @@
 <html>
 	<head>
 		<title>Web Test</title>
+
+
+
 		<script type="text/javascript" src="yaml.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 		<link type="text/css" rel="stylesheet" href="styleSheet.css">
+<<<<<<< HEAD
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,900" rel="stylesheet">
 
+=======
+
+		
+>>>>>>> master
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
 		<script src="//d3js.org/d3.v3.min.js"></script>
+
+		<!-- @#####Make Sure to change this to look for the local copy#####@ -->
+		<!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+		<script type="text/javascript" src="gijgo.min.js"></script>
+		<link type="text/css" rel="stylesheet" href="gijgo.min.css">
+    	<!-- <script src="http://code.gijgo.com/1.4.0/js/gijgo.js" type="text/javascript"></script> -->
+    	<!-- <link href="http://code.gijgo.com/1.4.0/css/gijgo.css" rel="stylesheet" type="text/css" /> -->
+
 		<script>
 			// var json = null;
 				var margin = {top: 20, right: 120, bottom: 20, left: 120},
@@ -29,8 +45,22 @@
 				    .projection(function(d) { return [d.y, d.x]; });
 
 				var svg = null;
+				var dialog;
+				var jsonAssetsArr;
+				var jsonWoArr;
 
 		 	$(document).ready(function() {
+		 		
+				dialog = $("#dialog").dialog({
+					autoOpen: false,
+					closeButtonInHeader: false,
+					maxWidth: 700,
+					// maxHeight: 700,
+					//width: 'auto',
+					//resizable: true,
+					width: 500
+			  	});
+
 				svg = d3.select("#chart").append("svg")
 				    .attr("width", width + margin.right + margin.left)
 				    .attr("height", height + margin.top + margin.bottom)
@@ -43,10 +73,33 @@
 					var $assetTypes = $("#asset_types");
 					var $non_BHATypes = $("#non_asset_bha_items");
 					console.log(json);
-
+					
+					
 
 					// initialization array 0-35
+<<<<<<< HEAD
 
+=======
+					
+					for (var i = 0; i < json.asset_types.length; i++) {
+
+						var asset = json.asset_types[i];
+						for (var j = 0; j < json.work_order_types.length; j++) {
+							var woType = json.work_order_types[j];
+							if(woType.underscored && woType.underscored.startsWith(asset.prefix)) {
+								woType._asset = asset;
+							}
+						}
+
+					}
+					// jsonAssetsArr = json.asset_types;
+					jsonWoArr = json.work_order_types;
+
+
+					function testing(){
+						console.log("test");
+					}
+>>>>>>> master
 
 					var workFlow = {};
 
@@ -87,7 +140,7 @@
 							for (var i=0; i<spawns.length; i++) {
 								var spawn = spawns[i];
 								var name = spawn["display_name"];
-								var child = {parent: node, id: spawn._id};
+								var child = {parent: node, id: spawn._id, wo: spawn};
 								var childSpawns = null;
 
 								if (spawn.spawns) {
@@ -198,12 +251,18 @@
       .attr("r", 1e-6)
       .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
+      // $("circle").attr( "onclick", "alert()" );
+      // // ONclick attribute added
+
   nodeEnter.append("text")
       .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
       .attr("dy", ".35em")
       .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .attr("data-id", function(d) { return d.id;})
+      .attr("class", "itemNode")
       .text(function(d) { return d.name; })
-      .style("fill-opacity", 1e-6);
+      .style("fill-opacity", 1e-6)
+      .on("click", itemClick);
 
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
@@ -270,25 +329,106 @@ function click(d) {
   } else {
     d.children = d._children;
     d._children = null;
+    if (!d.children) {
+    	itemClick(d);
+    }
   }
   update(d);
 }
+
+function itemClick(d) {
+
+	var $appendie = $("#dialogBody");
+	$appendie.empty();
+
+	function grandChild(key, value) {
+		//if (value) {
+			var valType = typeof value;
+			if (valType == 'string' || valType == 'number' || valType == 'boolean') {
+				html += "<li>" + key + ": " + value + "</li>";
+			}
+			else if (valType == 'object') {
+				html += "<li>" + key + ": "; 
+				html += "<ul>";
+				for (var key in value) {			
+					grandChild(key, value[key]);
+				}
+
+				html += "</ul>";
+				html += "</li>";
+			}
+	}
+
+	var html = "";
+	// random(json.asset_types, $assetTypes);
+
+	function random(ran, id) {
+		// for (var i=0; i < ran.length; i++) {
+			var arrayLvl = ran;
+			html = "";
+			
+			html += "<div class='itemBody' style='overflow-y: auto; max-height: 500px'>"; //class='itemBody'
+					// html += "<h4 type='button' class='itemHeader'>" + arrayLvl["display_name"] + "</h4>";
+					html += "<ul class='outermostLayer'>"; //adding the collapse class will make this disapear
+						for (var key in arrayLvl) {
+							grandChild(key, arrayLvl[key]);
+						}
+					html += "</ul>";
+			html += "</div>";
+			id.append(html); 
+		// }
+	}
+
+	// alert( d.name +" "+ d.id);
+	
+	
+	// $("#dialog").css({ "visibility": "visible"});
+	dialog.open(d.name);
+	 console.log(d.name);
+	 console.log(jsonWoArr[0]._asset.display_name);
+	 
+	random(d.wo, $appendie);
+
+	 // for (var i = 0; i < jsonWoArr.length; i++) {
+	 // 	var wo = jsonWoArr[i];
+
+	 // 	if(wo.display_name === d.name) {
+	 // 		random(wo, $appendie);
+	 // 		// $('#dialogBody').append('<p>' + wo._asset.display_name + '</p>');
+	 // 	} 
+	 // }
+
+}
+
+
 
 		</script>
 
 	</head>
 	<body>
 		<div class="tab">
-			<button class="tablinks" onclick="openTab(event, 'asset_types')">Assets</button>
-			<button class="tablinks" onclick="openTab(event, 'non_asset_bha_items')">BHA Items</button>
+			<button class="tablinks" onclick="openTab(event, 'asset_types'); if(dialog) dialog.close();">Assets</button>
+			<button class="tablinks" onclick="openTab(event, 'non_asset_bha_items'); if(dialog) dialog.close();">BHA Items</button>
 			<button class="tabLinks" onclick="openTab(event, 'work_flow')">Work Flow</button>
 		</div>
 
 		<div id="asset_types" class="tabcontent"><h1>Assets:</h1></div>
 		<div id="non_asset_bha_items" class="tabcontent"><h1>BHA Items:</h1></div>
-		<div id="work_flow" class="tabcontent"><h1>Work Tree: </h1><div id="chart"></div></div>
+		<div id="work_flow" class="tabcontent"><h1 id="workHead">Work Tree: </h1><div id="chart"></div></div>
 
+		<div style="display: none" id="dialog" title="jQuery Dialog" width="400">
+		<hr>
+	        <div id="dialogBody" data-role="body">
+	            
+	        </div>
 
+	        <div data-role="footer">
+	        	<button class="gj-md-button" data-role="close">close</button>
+	            <!-- <button class="gj-md-button" onclick="dialog.close()">OK</button> -->
+	        </div>
+    	</div>
+
+		
 		<script type="text/javascript">
 
 			function openTab(evt, idName) {
