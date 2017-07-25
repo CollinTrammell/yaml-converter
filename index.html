@@ -109,7 +109,7 @@
 						smallArray.push(json.work_order_types[i]);
 					}
 
-					workFlowBuilder(workFlow, "workOrder", smallArray);//woTypesArr
+					workFlowBuilder(workFlow, "Initializations", smallArray);//woTypesArr
 					console.log(workFlow);
 					setUpWorkFlow(workFlow);
 
@@ -198,6 +198,8 @@
 
 				});
 			});
+
+
 
 			function setUpWorkFlow(flowData) {
 			
@@ -328,12 +330,13 @@ function click(d) {
 }
 
 function itemClick(d) {
-
-	var $appendie = $("#dialogBody");
+	$("#woDialTab").click().addClass(' active');
+	var $appendie = $("#dialTab1");
+	var $appendie2 = $("#dialTab2");
+	$appendie2.empty();
 	$appendie.empty();
 
 	function grandChild(key, value) {
-		//if (value) {
 			var valType = typeof value;
 			if (valType == 'string' || valType == 'number' || valType == 'boolean') {
 				html += "<li>" + key + ": " + value + "</li>";
@@ -356,29 +359,43 @@ function itemClick(d) {
 	function random(ran, id) {
 		// for (var i=0; i < ran.length; i++) {
 			var arrayLvl = ran;
+
 			html = "";
 			
-			html += "<div class='itemBody' style='overflow-y: auto; max-height: 500px'>"; //class='itemBody'
-					// html += "<h4 type='button' class='itemHeader'>" + arrayLvl["display_name"] + "</h4>";
-					html += "<ul class='outermostLayer'>"; //adding the collapse class will make this disapear
-						for (var key in arrayLvl) {
-							grandChild(key, arrayLvl[key]);
-						}
-					html += "</ul>";
-			html += "</div>";
+				html += "<div class='itemBody' style='overflow-y: auto; max-height: 500px'>"; //class='itemBody'
+						// html += "<h4 type='button' class='itemHeader'>" + arrayLvl["display_name"] + "</h4>";
+						html += "<ul class='outermostLayer'>"; //adding the collapse class will make this disapear
+							for (var key in arrayLvl) {
+								grandChild(key, arrayLvl[key]);
+							}
+						html += "</ul>";
+				html += "</div>";
 			id.append(html); 
 		// }
 	}
 
-	// alert( d.name +" "+ d.id);
 	
 	
-	// $("#dialog").css({ "visibility": "visible"});
+	
 	dialog.open(d.name);
-	 console.log(d.name);
-	 console.log(jsonWoArr[0]._asset.display_name);
+	 // console.log(d.name);
+	 // console.log(jsonWoArr[0]._asset.display_name);
 	 
-	random(d.wo, $appendie);
+	random(d.wo._asset, $appendie);
+
+
+	var propertyNames = Object.keys(d.wo);
+	var noUnderscoreObj = {};
+	propertyNames.forEach(function(index) {
+		if (!index.startsWith("_")) {
+			noUnderscoreObj[index] = d.wo[index];
+		}
+	});
+	random(noUnderscoreObj, $appendie2);
+
+	
+	
+
 
 	 // for (var i = 0; i < jsonWoArr.length; i++) {
 	 // 	var wo = jsonWoArr[i];
@@ -393,24 +410,34 @@ function itemClick(d) {
 
 
 
+
+
 		</script>
 		
 	</head>
 	<body>
 		<div class="tab">
-			<button class="tablinks" onclick="openTab(event, 'asset_types'); if(dialog) dialog.close();">Assets</button>
-			<button class="tablinks" onclick="openTab(event, 'non_asset_bha_items'); if(dialog) dialog.close();">BHA Items</button>
-			<button class="tabLinks" onclick="openTab(event, 'work_flow')">Work Flow</button>
+			<button id="assetTab" class="tablinks headTabs" onclick="openTab(event, 'asset_types', 'headTabs', 'tabContentHead'); if(dialog) dialog.close();">Assets</button>
+			<button class="tablinks headTabs" onclick="openTab(event, 'non_asset_bha_items', 'headTabs', 'tabContentHead'); if(dialog) dialog.close();">BHA Items</button>
+			<button class="tabLinks headTabs" onclick="openTab(event, 'work_flow', 'headTabs', 'tabContentHead')">Work Flow</button>
 		</div>
 
-		<div id="asset_types" class="tabcontent"><h1>Assets:</h1></div>
-		<div id="non_asset_bha_items" class="tabcontent"><h1>BHA Items:</h1></div>
-		<div id="work_flow" class="tabcontent"><h1 id="workHead">Work Tree: </h1><div id="chart"></div></div>
+		<div id="asset_types" class="tabcontent tabContentHead"><h1>Assets:</h1></div>
+		<div id="non_asset_bha_items" class="tabcontent tabContentHead"><h1>BHA Items:</h1></div>
+		<div id="work_flow" class="tabcontent tabContentHead"><h1 id="workHead">Work Tree: </h1><div id="chart"></div></div>
 
 		<div style="display: none" id="dialog" title="jQuery Dialog" width="400">
 		<hr>
 	        <div id="dialogBody" data-role="body">
-	            
+	        	<div class="tab">
+					<button class="tablinks dialogTab" onclick="openTab(event, 'dialTab1', 'dialogTab', 'tabContentDial')">Asset</button>
+					<button id="woDialTab" class="tablinks dialogTab" onclick="openTab(event, 'dialTab2', 'dialogTab', 'tabContentDial')">Work Order</button>
+					
+				</div>
+				<div id="dialTab1" class="tabcontent tabContentDial"></div>
+				<!-- <div id="dialTabDose" class="tabcontent tabContentDial"><h1>COntent Crap</h1></div> -->
+				<div id="dialTab2" class="tabcontent tabContentDial"><h1>Workflow Crap</h1></div>
+
 	        </div>
 
 	        <div data-role="footer">
@@ -422,19 +449,26 @@ function itemClick(d) {
 		
 		<script type="text/javascript">
 			
-			function openTab(evt, idName) {
+		function openTab(evt, idName, tGroupClass, tContentClass) {
+
 			    var i, tabcontent, tablinks;
-			    tabcontent = document.getElementsByClassName("tabcontent");
+			    tabcontent = document.getElementsByClassName(tContentClass);//"tabcontent"
+			    //tabGroup = document.getElementsByClassName(tGroupClass);
 			    for (i = 0; i < tabcontent.length; i++) {
 			        tabcontent[i].style.display = "none";
 			    }
-			    tablinks = document.getElementsByClassName("tablinks");
+			    tablinks = document.getElementsByClassName(tGroupClass);//"tablinks"
 			    for (i = 0; i < tablinks.length; i++) {
 			        tablinks[i].className = tablinks[i].className.replace(" active", "");
 			    }
 			    document.getElementById(idName).style.display = "block";
-			    evt.currentTarget.className += " active";
+			    if (evt.currentTarget != undefined){
+			    	evt.currentTarget.className += " active";
+			    }
+
 			}
+			$("#assetTab").click().addClass(' active');
+
 		</script>
 	</body>
 </html>
