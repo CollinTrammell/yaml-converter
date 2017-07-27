@@ -228,7 +228,7 @@
       links = tree.links(nodes);
 
   // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.y = d.depth * 180; });
+  nodes.forEach(function(d) { d.y = d.depth * 180; });//180
 
   // Update the nodes…
   var node = svg.selectAll("g.node")
@@ -264,7 +264,7 @@
 
   nodeUpdate.select("circle")
       .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "black" : "#fff"; });
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; }); //"lightsteelblue" : "#fff";
 
   nodeUpdate.select("text")
       .style("fill-opacity", 1);
@@ -316,6 +316,7 @@
 
 // Toggle children on click.
 function click(d) {
+	console.log(d);
   if (d.children) {
     d._children = d.children;
     d.children = null;
