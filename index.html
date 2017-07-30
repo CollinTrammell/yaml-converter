@@ -45,7 +45,7 @@
 				var jsonWoArr;
 
 		 	$(document).ready(function() {
-		 		
+
 				dialog = $("#dialog").dialog({
 					autoOpen: false,
 					closeButtonInHeader: false,
@@ -68,11 +68,11 @@
 					var $assetTypes = $("#asset_types");
 					var $non_BHATypes = $("#non_asset_bha_items");
 					console.log(json);
-					
-					
+
+
 
 					// initialization array 0-35
-					
+
 					for (var i = 0; i < json.asset_types.length; i++) {
 
 						var asset = json.asset_types[i];
@@ -138,7 +138,7 @@
 									childSpawns = [];
 									for (var si = 0; si<spawn.spawns.length; si++) {
 										var childSpawn = spawn.spawns[si];
-										childSpawns.push(woTypes[childSpawn.full_klass_name]);		
+										childSpawns.push(woTypes[childSpawn.full_klass_name]);
 									}
 								}
 
@@ -158,12 +158,12 @@
 								html += "<li>" + key + ": " + value + "</li>";
 							}
 							else if (valType == 'object') {
-								html += "<li>" + key + ": "; 
+								html += "<li>" + key + ": ";
 								html += "<ul>";
-								for (var key in value) {			
+								for (var key in value) {
 									grandChild(key, value[key]);
 								}
-								// html += "</li>"; //Not sure why it was put this way to begin with, but seems to be wrong.  
+								// html += "</li>"; //Not sure why it was put this way to begin with, but seems to be wrong.
 								// html += "</ul>"; //Still worked though?
 
 								html += "</ul>";
@@ -188,7 +188,7 @@
 										}
 									html += "</ul>";
 							html += "</div>";
-							id.append(html); 
+							id.append(html);
 						}
 					}
 
@@ -202,7 +202,7 @@
 
 
 			function setUpWorkFlow(flowData) {
-			
+
 
 
 				  root = flowData;
@@ -242,7 +242,7 @@
 
   nodeEnter.append("circle")
       .attr("r", 1e-6)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      .style("fill", function(d) { return d._children ? "red" : "red"; });
 
       // $("circle").attr( "onclick", "alert()" );
       // // ONclick attribute added
@@ -264,7 +264,7 @@
 
   nodeUpdate.select("circle")
       .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; }); //"lightsteelblue" : "#fff";
+      .style("fill", function(d) { return d._children ? "red" : "#fff"; }); //"lightsteelblue" : "#fff";
 
   nodeUpdate.select("text")
       .style("fill-opacity", 1);
@@ -343,9 +343,9 @@ function itemClick(d) {
 				html += "<li>" + key + ": " + value + "</li>";
 			}
 			else if (valType == 'object') {
-				html += "<li>" + key + ": "; 
+				html += "<li>" + key + ": ";
 				html += "<ul>";
-				for (var key in value) {			
+				for (var key in value) {
 					grandChild(key, value[key]);
 				}
 
@@ -362,7 +362,7 @@ function itemClick(d) {
 			var arrayLvl = ran;
 
 			html = "";
-			
+
 				html += "<div class='itemBody' style='overflow-y: auto; max-height: 500px'>"; //class='itemBody'
 						// html += "<h4 type='button' class='itemHeader'>" + arrayLvl["display_name"] + "</h4>";
 						html += "<ul class='outermostLayer'>"; //adding the collapse class will make this disapear
@@ -371,17 +371,17 @@ function itemClick(d) {
 							}
 						html += "</ul>";
 				html += "</div>";
-			id.append(html); 
+			id.append(html);
 		// }
 	}
 
-	
-	
-	
+
+
+
 	dialog.open(d.name);
 	 // console.log(d.name);
 	 // console.log(jsonWoArr[0]._asset.display_name);
-	 
+
 	random(d.wo._asset, $appendie);
 
 
@@ -394,8 +394,8 @@ function itemClick(d) {
 	});
 	random(noUnderscoreObj, $appendie2);
 
-	
-	
+
+
 
 
 	 // for (var i = 0; i < jsonWoArr.length; i++) {
@@ -404,7 +404,7 @@ function itemClick(d) {
 	 // 	if(wo.display_name === d.name) {
 	 // 		random(wo, $appendie);
 	 // 		// $('#dialogBody').append('<p>' + wo._asset.display_name + '</p>');
-	 // 	} 
+	 // 	}
 	 // }
 
 }
@@ -414,7 +414,7 @@ function itemClick(d) {
 
 
 		</script>
-		
+
 	</head>
 	<body>
 		<div class="tab">
@@ -433,7 +433,7 @@ function itemClick(d) {
 	        	<div class="tab">
 					<button class="tablinks dialogTab" onclick="openTab(event, 'dialTab1', 'dialogTab', 'tabContentDial')">Asset</button>
 					<button id="woDialTab" class="tablinks dialogTab" onclick="openTab(event, 'dialTab2', 'dialogTab', 'tabContentDial')">Work Order</button>
-					
+
 				</div>
 				<div id="dialTab1" class="tabcontent tabContentDial"></div>
 				<!-- <div id="dialTabDose" class="tabcontent tabContentDial"><h1>COntent Crap</h1></div> -->
@@ -447,9 +447,9 @@ function itemClick(d) {
 	        </div>
     	</div>
 
-		
+
 		<script type="text/javascript">
-			
+
 		function openTab(evt, idName, tGroupClass, tContentClass) {
 
 			    var i, tabcontent, tablinks;
