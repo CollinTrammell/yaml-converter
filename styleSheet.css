@@ -1,6 +1,7 @@
 h1 {
   font-family: 'roboto', sans-serif;
   font-weight: 900;
+  -webkit-margin-start: 2.5%;
 }
 
 body {
@@ -66,11 +67,21 @@ div.tab button.active {
 .itemBody {
 	border: 1px solid black;
 	margin-bottom: 10px;
+  background-color: white;
+  width: 30%;
+  display: inline-block;
+  -webkit-margin-start: 2.5%;
 }
+
+.itemBody:nth-child(3n)
+{
+  margin-right: 0px;
+}
+
 .itemHeader {
 	margin: 0px;
 	padding: 8px;
-	background-color: silver;
+	background-color: white;
 }
 /*.outermostLayer {
 	border: 1px solid black;
