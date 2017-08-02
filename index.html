@@ -3,105 +3,80 @@
 <html>
 	<head>
 		<title>Web Test</title>
-		<script type="text/javascript" src="yaml.js"></script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
-		<link type="text/css" rel="stylesheet" href="styleSheet.css">
-		
 
-
-
+		<script type="text/javascript" src="js/yaml.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
-		<script>
+		<script src="//d3js.org/d3.v3.min.js"></script>
+		<script type="text/javascript" src="js/gijgo.min.js"></script>
+		<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+		<script src="js/script.js"></script>
 
-		 	$(document).ready(function() {
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="css/gijgo.min.css">
+		<link type="text/css" rel="stylesheet" href="css/styleSheet.css">
 
-		 		
-
-				YAML.load('tenant-assets.yaml', function(json) {
-					var $assetTypes = $("#asset_types");
-					var $non_BHATypes = $("#non_asset_bha_items");
-					console.log(json);
-
-
-					function grandChild(key, value) {
-						//if (value) {
-							var valType = typeof value;
-							if (valType == 'string' || valType == 'number' || valType == 'boolean') {
-								html += "<li>" + key + ": " + value + "</li>";
-							}
-							else if (valType == 'object') {
-								html += "<li>" + key + ": "; 
-								html += "<ul>";
-								for (var key in value) {			
-									grandChild(key, value[key]);
-								}
-								// html += "</li>"; //Not sure why it was put this way to begin with, but seems to be wrong.  
-								// html += "</ul>"; //Still worked though?
-
-								html += "</ul>";
-								html += "</li>";
-							}
-						//}
-					}
-
-					var html = "";
-					random(json.asset_types, $assetTypes);
-					random(json.non_asset_bha_items, $non_BHATypes);
-
-					function random(ran, id) {
-						for (var i=0; i < ran.length; i++) {
-							var arrayLvl = ran[i];
-							html = "";
-							html += "<div class='itemBody'>";
-									html += "<h4 type='button' class='itemHeader'>" + arrayLvl["display_name"] + "</h4>";
-									html += "<ul class='outermostLayer collapse'>"; //adding the collapse class will make this disapear
-										for (var key in arrayLvl) {
-											grandChild(key, arrayLvl[key]);
-										}
-									html += "</ul>";
-							html += "</div>";
-							id.append(html); 
-						}
-					}
-
-					$(".itemHeader").click(function(){
-						$(this).next().collapse("toggle");
-					});
-
-				});
-			});
-
-		</script>
-		
 	</head>
 	<body>
 		<div class="tab">
-			<button class="tablinks" onclick="openTab(event, 'asset_types')">Assets</button>
-			<button class="tablinks" onclick="openTab(event, 'non_asset_bha_items')">BHA Items</button>
-			<button class="tabLinks" onclick="openTab(event, 'work_flow')">Work Flow</button>
+			<img id="drakewellImg" style="float: right;" src="http://drakewell.us/images/logo.png" alt="DrakeWell Logo" height="45" width="106">
+			<button id="assetTab" class="tablinks headTabs" onclick="openTab(event, 'asset_types', 'headTabs', 'tabContentHead'); if(dialog) dialog.close();">Assets</button>
+			<button class="tablinks headTabs" onclick="openTab(event, 'non_asset_bha_items', 'headTabs', 'tabContentHead'); if(dialog) dialog.close();">BHA Items</button>
+			<button class="tabLinks headTabs" onclick="openTab(event, 'work_flow', 'headTabs', 'tabContentHead')">Work Flow</button>
 		</div>
 
-		<div id="asset_types" class="tabcontent"><h1>Assets:</h1></div>
-		<div id="non_asset_bha_items" class="tabcontent"><h1>BHA Items:</h1></div>
-		<div id="work_flow" class="tabcontent"><h1>I have no content yet</h1></div>
+<!-- Added Sortable id to element below removed asset_types-->
+		<div id="asset_types" class="tabcontent tabContentHead">
+				<h1>Assets:</h1>
+				<div id="sortable"></div>
+		</div>
+		<div id="non_asset_bha_items" class="tabcontent tabContentHead">
+				<h1>BHA Items:</h1>
+				<div id="sortable2"></div>
+		</div>
+		<div id="work_flow" class="tabcontent tabContentHead"><h1 id="workHead">Work Tree: </h1><div id="chart"></div></div>
+		<div style="display: none" id="dialog" title="jQuery Dialog" width="400">
+			<hr>
+			<div id="dialogBody" data-role="body">
+				<div class="tab">
+					<button class="tablinks dialogTab" onclick="openTab(event, 'dialTab1', 'dialogTab', 'tabContentDial')">Asset</button>
+					<button id="woDialTab" class="tablinks dialogTab" onclick="openTab(event, 'dialTab2', 'dialogTab', 'tabContentDial')">Work Order</button>
+
+				</div>
+				<div id="dialTab1" class="tabcontent tabContentDial"></div>
+				<div id="dialTab2" class="tabcontent tabContentDial"><h1>Workflow Crap</h1></div>
+
+			</div>
+
+			<div data-role="footer">
+				<button class="gj-md-button" data-role="close">close</button>
+			</div>
+    		</div>
 
 
 		<script type="text/javascript">
-			
-			function openTab(evt, idName) {
+
+		function openTab(evt, idName, tGroupClass, tContentClass) {
+
 			    var i, tabcontent, tablinks;
-			    tabcontent = document.getElementsByClassName("tabcontent");
+			    tabcontent = document.getElementsByClassName(tContentClass);//"tabcontent"
+			    //tabGroup = document.getElementsByClassName(tGroupClass);
 			    for (i = 0; i < tabcontent.length; i++) {
 			        tabcontent[i].style.display = "none";
 			    }
-			    tablinks = document.getElementsByClassName("tablinks");
+			    tablinks = document.getElementsByClassName(tGroupClass);//"tablinks"
 			    for (i = 0; i < tablinks.length; i++) {
 			        tablinks[i].className = tablinks[i].className.replace(" active", "");
 			    }
 			    document.getElementById(idName).style.display = "block";
-			    evt.currentTarget.className += " active";
+			    if (evt.currentTarget != undefined){
+			    	evt.currentTarget.className += " active";
+			    }
+
 			}
+			$("#assetTab").click().addClass(' active');
+
 		</script>
 	</body>
 </html>
