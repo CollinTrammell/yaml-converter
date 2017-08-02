@@ -229,7 +229,7 @@ function update(source) {
 
      nodeEnter.append("circle")
      .attr("r", 1e-6)
-     .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+     .style("fill", function(d) { return d._children ? "red" : "red"; });
 
      nodeEnter.append("text")
      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
@@ -248,7 +248,7 @@ function update(source) {
 
      nodeUpdate.select("circle")
      .attr("r", 4.5)
-     .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; }); //"lightsteelblue" : "#fff";
+     .style("fill", function(d) { return d._children ? "red" : "#fff"; }); //"lightsteelblue" : "#fff";
 
      nodeUpdate.select("text")
      .style("fill-opacity", 1);
